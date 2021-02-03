@@ -169,8 +169,26 @@ void PWM0_CH2_Analog_Init(void)
 {
 	P05_PUSHPULL_MODE;	
 
+	P05 = 0;
+}
+
+void enable_PWM0_CH2_AnalogPWM(uint8_t enable ,uint8_t duty)
+{
+	if (enable)
+	{
+	    ENABLE_TIMER1_INTERRUPT;                       //enable Timer0 interrupt
+	    set_TCON_TR1; 
+		PWM0_CH2_Analog_SetDuty(duty);	
+	}
+	else
+	{
+	    DISABLE_TIMER1_INTERRUPT;
+	    clr_TCON_TR1; 		
+		PWM0_CH2_Analog_SetDuty(0);		
+	}
 
 }
+
 
 void GPIO_Init(void)
 {
@@ -269,11 +287,12 @@ void task_loop(void)
 
 	if (is_flag_set(flag_duty_swap))
 	{
-		PWM0_CH2_Analog_SetDuty(50);
+//		enable_PWM0_CH2_AnalogPWM(Enable , 50);
+		enable_PWM0_CH2_AnalogPWM(Enable , 85);		
 	}
 	else
 	{
-		PWM0_CH2_Analog_SetDuty(85);
+		enable_PWM0_CH2_AnalogPWM(Disable , 0);
 	}
 
 }
@@ -357,10 +376,10 @@ void TIMER1_Init(void)
     TH1 = 0;
     TL1 = 0;
 	
-    ENABLE_TIMER1_INTERRUPT;                       //enable Timer0 interrupt
+//    ENABLE_TIMER1_INTERRUPT;                       //enable Timer0 interrupt
     ENABLE_GLOBAL_INTERRUPT;                       //enable interrupts
   
-    set_TCON_TR1;                                  //Timer0 run
+//    set_TCON_TR1;                                  //Timer0 run
 }
 
 
